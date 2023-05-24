@@ -1,0 +1,30 @@
+name : "Terraform Apply Infrastructure"
+
+on:
+   # For Manual Trigger
+  workflow_dispatch:  
+  
+jobs:
+  provision-s3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: '${{ secrets.TF_USER_AWS_KEY }}'
+          aws-secret-access-key: '${{ secrets.TF_USER_AWS_SECRET }}'
+          aws-region: us-east-1
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        
+      - name: Terraform Apply
+        id:   apply
+        env:
+          TF_VAR_bucket_name:  "${{ github.event.inputs.bucket_name }}"
+        run: |
+          terraform init
+          terraform validate
+          terraform plan 
+          terraform apply -auto-approve
