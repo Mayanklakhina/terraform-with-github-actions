@@ -25,5 +25,4 @@ jobs:
 
       - name: Destroy S3 bucket
         run: |
-          terraform plan -destroy -out=tfplan
-          terraform apply -auto-approve tfplan
+          terraform destroy -auto-approve
