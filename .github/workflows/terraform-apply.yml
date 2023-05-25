@@ -29,7 +29,6 @@ jobs:
          
          
   create-resources: 
-     if: ${{ always() }}
      needs : initialization
      runs-on : ubuntu-latest
      steps:
