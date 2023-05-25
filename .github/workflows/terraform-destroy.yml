@@ -24,5 +24,4 @@ jobs:
         run: terraform init
 
       - name: Destroy S3 bucket
-        run: |
-          terraform destroy -target=aws_s3_bucket.bucket_name -auto-approve
+        run: terraform destroy -auto-approve
