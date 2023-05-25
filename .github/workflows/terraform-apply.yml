@@ -19,12 +19,31 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         
-      - name: Terraform Apply
-        id:   apply
-        env:
-          TF_VAR_bucket_name:  "${{ github.event.inputs.bucket_name }}"
-        run: |
-          terraform init
-          terraform validate
-          terraform plan 
-          terraform apply -auto-approve
+  init-command-run: 
+     needs : provision-s3
+     runs-on : ubuntu-latest
+     steps:
+       - name : Terraform Init
+         run : terraform init
+         
+  validate-command-run: 
+     needs : provision-s3
+     runs-on : ubuntu-latest
+     steps:
+       - name : Terraform Validate
+         run : terraform validate
+         
+  plan-command-run: 
+     needs : provision-s3
+     runs-on : ubuntu-latest
+     steps:
+       - name : Terraform Plan
+         run : terraform plan
+         
+  apply-command-run: 
+     if: ${{ always() }}
+     needs : [provision-s3, init-command-run, plan-command-run]
+     runs-on : ubuntu-latest
+     steps:
+       - name : Terraform Apply
+         run : terraform apply -auto-approve
